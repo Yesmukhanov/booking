@@ -1,0 +1,61 @@
+package kz.sdu.booking.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import kz.sdu.booking.model.dto.AuthenticationResponse;
+import kz.sdu.booking.model.dto.RegisterRequest;
+import kz.sdu.booking.service.AuthenticationService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/users")
+public class UserController {
+
+	private final AuthenticationService authenticationService;
+
+	@PostMapping("/register")
+	@Operation(
+			summary = "Register a new user",
+			description = "Registers a new user in the system and returns an authentication token.",
+			requestBody = @RequestBody(
+					description = "User registration details",
+					required = true,
+					content = @Content(
+							schema = @Schema(implementation = RegisterRequest.class)
+					)
+			),
+			responses = {
+					@ApiResponse(
+							responseCode = "200",
+							description = "User registered successfully",
+							content = @Content(
+									schema = @Schema(implementation = AuthenticationResponse.class)
+							)
+					),
+					@ApiResponse(
+							responseCode = "400",
+							description = "Bad Request - User with this email already exists",
+							content = @Content(mediaType = "text/plain")
+					),
+					@ApiResponse(
+							responseCode = "500",
+							description = "Internal Server Error"
+					)
+			}
+	)
+	public ResponseEntity<?> register(@RequestBody final RegisterRequest registerRequest) {
+		try {
+			AuthenticationResponse response = authenticationService.register(registerRequest);
+			return ResponseEntity.ok(response);
+		} catch (IllegalStateException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with this email already exists");
+		}
+	}
+}

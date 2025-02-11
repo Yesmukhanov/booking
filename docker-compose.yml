@@ -1,7 +1,22 @@
 version: '3.8'
 
 services:
+  db:
+    container_name: postgres_db
+    image: postgres
+    environment:
+      POSTGRES_DB: booking_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
   app:
+    container_name: my-spring-app
     image: my-spring-boot-app
     build:
       context: .
@@ -9,6 +24,14 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - JAVA_OPTS=-Xms512m -Xmx1024m
+      SPRING_PROFILES_ACTIVE: prod
+      JAVA_OPTS: "-Xms512m -Xmx1024m"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/booking_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - db
     restart: unless-stopped
+
+volumes:
+  postgres_data:
