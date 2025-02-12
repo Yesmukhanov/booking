@@ -8,8 +8,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import kz.sdu.booking.model.dto.AuthenticationRequest;
 import kz.sdu.booking.model.dto.AuthenticationResponse;
 import kz.sdu.booking.model.dto.RefreshTokenRequest;
+import kz.sdu.booking.model.dto.RegisterRequest;
 import kz.sdu.booking.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +53,7 @@ public class AuthenticationController {
 			}
 	)
 	public ResponseEntity<AuthenticationResponse> authentication(
-			@RequestBody final AuthenticationRequest authenticationRequest
+			@org.springframework.web.bind.annotation.RequestBody final AuthenticationRequest authenticationRequest
 	) {
 		return ResponseEntity.ok(authenticationService.authentication(authenticationRequest));
 	}
@@ -86,7 +88,47 @@ public class AuthenticationController {
 					)
 			}
 	)
-	public ResponseEntity<AuthenticationResponse> refresh(@RequestBody final RefreshTokenRequest refreshTokenRequest) {
+	public ResponseEntity<AuthenticationResponse> refresh(@org.springframework.web.bind.annotation.RequestBody final RefreshTokenRequest refreshTokenRequest) {
 		return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
+	}
+
+
+	@PostMapping("/register")
+	@Operation(
+			summary = "Register a new user",
+			description = "Registers a new user in the system and returns an authentication token.",
+			requestBody = @RequestBody(
+					description = "User registration details",
+					required = true,
+					content = @Content(
+							schema = @Schema(implementation = RegisterRequest.class)
+					)
+			),
+			responses = {
+					@ApiResponse(
+							responseCode = "200",
+							description = "User registered successfully",
+							content = @Content(
+									schema = @Schema(implementation = AuthenticationResponse.class)
+							)
+					),
+					@ApiResponse(
+							responseCode = "400",
+							description = "Bad Request - User with this email already exists",
+							content = @Content(mediaType = "text/plain")
+					),
+					@ApiResponse(
+							responseCode = "500",
+							description = "Internal Server Error"
+					)
+			}
+	)
+	public ResponseEntity<?> register(@org.springframework.web.bind.annotation.RequestBody final RegisterRequest registerRequest) {
+		try {
+			AuthenticationResponse response = authenticationService.register(registerRequest);
+			return ResponseEntity.ok(response);
+		} catch (IllegalStateException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with this email already exists");
+		}
 	}
 }

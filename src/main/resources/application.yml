@@ -11,8 +11,14 @@ spring:
       ddl-auto: update
 
 server:
-  port: 8080
+  port: 8000
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
