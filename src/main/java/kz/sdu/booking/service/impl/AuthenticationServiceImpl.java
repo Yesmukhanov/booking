@@ -1,11 +1,11 @@
 package kz.sdu.booking.service.impl;
 
-import kz.sdu.booking.model.Role;
-import kz.sdu.booking.model.User;
 import kz.sdu.booking.model.dto.AuthenticationRequest;
 import kz.sdu.booking.model.dto.AuthenticationResponse;
 import kz.sdu.booking.model.dto.RefreshTokenRequest;
 import kz.sdu.booking.model.dto.RegisterRequest;
+import kz.sdu.booking.model.entity.User;
+import kz.sdu.booking.model.enums.Role;
 import kz.sdu.booking.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,7 +38,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				.lastName(registerRequest.getLastName())
 				.email(registerRequest.getEmail())
 				.password(passwordEncoder.encode(registerRequest.getPassword()))
-				.role(Role.ROLE_USER)
+				.role(Role.STUDENT)
 				.isExpired(false)
 				.isLocked(false)
 				.build();
