@@ -1,10 +1,12 @@
-package kz.sdu.booking.model;
+package kz.sdu.booking.model.entity;
 
 import jakarta.persistence.*;
+import kz.sdu.booking.model.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.AbstractAuditable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +20,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements UserDetails {
+public class User extends AbstractAuditable<User, Long> implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +40,9 @@ public class User implements UserDetails {
 
 	@Enumerated(EnumType.STRING)
 	private Role role;
+
+	@OneToMany(mappedBy = "user")
+	private List<Reservation> reservations;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
