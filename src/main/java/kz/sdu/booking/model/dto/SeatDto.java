@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SeatDTO {
+public class SeatDto {
 
 	private Integer id;
 	private String number;

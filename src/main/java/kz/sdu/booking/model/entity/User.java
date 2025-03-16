@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractAuditable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,6 +19,7 @@ import java.util.List;
 @Table(name = "t_users")
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends AbstractAuditable<User, Long> implements UserDetails {
@@ -30,6 +32,7 @@ public class User extends AbstractAuditable<User, Long> implements UserDetails {
 
 	private String lastName;
 
+	@Column(unique = true, nullable = false)
 	private String email;
 
 	private String password;
@@ -43,6 +46,9 @@ public class User extends AbstractAuditable<User, Long> implements UserDetails {
 
 	@OneToMany(mappedBy = "user")
 	private List<Reservation> reservations;
+
+	@Column(nullable = false)
+	private Boolean isDeleted = false;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

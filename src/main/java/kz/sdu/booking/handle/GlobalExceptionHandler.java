@@ -14,7 +14,14 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(NoSuchElementException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ResponseBody
-	public String handleNoSuchElementException(NoSuchElementException ex) {
+	public String handleNoSuchElementException(final NoSuchElementException ex) {
+		return ex.getMessage();
+	}
+
+	@ExceptionHandler(UserInputException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public String handleUserInputException(final UserInputException ex) {
 		return ex.getMessage();
 	}
 }

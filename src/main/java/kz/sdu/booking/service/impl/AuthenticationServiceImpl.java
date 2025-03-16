@@ -1,5 +1,7 @@
 package kz.sdu.booking.service.impl;
 
+import kz.sdu.booking.Errors;
+import kz.sdu.booking.handle.UserInputException;
 import kz.sdu.booking.model.dto.AuthenticationRequest;
 import kz.sdu.booking.model.dto.AuthenticationResponse;
 import kz.sdu.booking.model.dto.RefreshTokenRequest;
@@ -26,53 +28,53 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private final kz.sdu.booking.service.JwtService jwtService;
 	private final AuthenticationManager authenticationManager;
 
-	public AuthenticationResponse register(final RegisterRequest registerRequest) {
+	public AuthenticationResponse register(final RegisterRequest registerRequest) throws UserInputException {
 		final Optional<User> existingUserOptional = userRepository.findByEmail(registerRequest.getEmail());
 
 		if (existingUserOptional.isPresent()) {
-			throw new IllegalStateException("User with this email already exists");
+			throw new UserInputException(Errors.MSG_USER_ALREADY_EXISTS);
 		}
 
 		final User user = User.builder()
-				.firstName(registerRequest.getFirstName())
-				.lastName(registerRequest.getLastName())
-				.email(registerRequest.getEmail())
-				.password(passwordEncoder.encode(registerRequest.getPassword()))
-				.role(Role.STUDENT)
-				.isExpired(false)
-				.isLocked(false)
-				.build();
+							  .firstName(registerRequest.getFirstName())
+							  .lastName(registerRequest.getLastName())
+							  .email(registerRequest.getEmail())
+							  .password(passwordEncoder.encode(registerRequest.getPassword()))
+							  .role(Role.STUDENT)
+							  .isExpired(false)
+							  .isLocked(false)
+							  .build();
 
 		userRepository.save(user);
 
-		String accessToken = jwtService.generateToken(user);
-		String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+		final String accessToken = jwtService.generateToken(user);
+		final String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
 		return AuthenticationResponse.builder()
-				.accessToken(accessToken)
-				.refreshToken(refreshToken)
-				.build();
+									 .accessToken(accessToken)
+									 .refreshToken(refreshToken)
+									 .build();
 
 	}
 
 	@Override
 	public AuthenticationResponse authentication(final AuthenticationRequest authenticationRequest) {
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-				authenticationRequest.getEmail(),
-				authenticationRequest.getPassword())
+			authenticationRequest.getEmail(),
+			authenticationRequest.getPassword())
 		);
 
 		final User user = userRepository.findByEmail(authenticationRequest.getEmail()).orElseThrow(
-				() -> new UsernameNotFoundException("USER NOT FOUND")
+			() -> new UsernameNotFoundException(Errors.MSG_USER_IS_NULL)
 		);
 
-		String accessToken = jwtService.generateToken(user);
-		String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+		final String accessToken = jwtService.generateToken(user);
+		final String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
 		return AuthenticationResponse.builder()
-				.accessToken(accessToken)
-				.refreshToken(refreshToken)
-				.build();
+									 .accessToken(accessToken)
+									 .refreshToken(refreshToken)
+									 .build();
 
 	}
 
@@ -80,14 +82,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		final String userEmail = jwtService.extractUserEmail(refreshTokenRequest.getRefreshToken());
 		final User user = userRepository.findByEmail(userEmail).orElseThrow();
 		if (jwtService.isTokenValid(refreshTokenRequest.getRefreshToken(), user)) {
-
-			String accessToken = jwtService.generateToken(user);
-			String refreshToken = refreshTokenRequest.getRefreshToken();
+			final String accessToken = jwtService.generateToken(user);
+			final String refreshToken = refreshTokenRequest.getRefreshToken();
 
 			return AuthenticationResponse.builder()
-					.accessToken(accessToken)
-					.refreshToken(refreshToken)
-					.build();
+										 .accessToken(accessToken)
+										 .refreshToken(refreshToken)
+										 .build();
 		}
 
 		return null;

@@ -1,14 +1,25 @@
 package kz.sdu.booking.controller;
 
+import kz.sdu.booking.model.dto.ReservationDto;
+import kz.sdu.booking.model.dto.ReservationRequestDto;
 import kz.sdu.booking.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/reservations")
+@RequestMapping(value = "/rest/sdu/booking/reservations", produces = APPLICATION_JSON_VALUE)
 public class ReservationController {
-
 	private final ReservationService reservationService;
+
+	@PostMapping("/create")
+	public ReservationDto createReservation(@RequestBody final ReservationRequestDto request) {
+		return reservationService.create(request);
+	}
+
 }

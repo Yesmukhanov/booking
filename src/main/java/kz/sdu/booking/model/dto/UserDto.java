@@ -10,10 +10,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class UserDto {
 
-	private Integer id;
-	private String name;
+	private Long id;
+	private String firstName;
+	private String lastName;
 	private String email;
 	private Role role;
+	private boolean isDeleted;
 }

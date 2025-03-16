@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import kz.sdu.booking.handle.UserInputException;
 import kz.sdu.booking.model.dto.AuthenticationRequest;
 import kz.sdu.booking.model.dto.AuthenticationResponse;
 import kz.sdu.booking.model.dto.RefreshTokenRequest;
@@ -127,7 +128,7 @@ public class AuthenticationController {
 		try {
 			AuthenticationResponse response = authenticationService.register(registerRequest);
 			return ResponseEntity.ok(response);
-		} catch (IllegalStateException e) {
+		} catch (IllegalStateException | UserInputException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with this email already exists");
 		}
 	}

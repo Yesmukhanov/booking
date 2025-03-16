@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReservationDTO {
+public class ReservationDto {
 
-	private Integer id;
-	private UserDTO user;
-	private SeatDTO seat;
+	private Long id;
+	private UserDto user;
+	private SeatDto seat;
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 	private ReservationStatus status;
