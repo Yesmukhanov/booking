@@ -8,6 +8,8 @@ import kz.sdu.booking.model.dto.UserEditRequestDto;
 import kz.sdu.booking.model.entity.User;
 import kz.sdu.booking.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -88,6 +90,13 @@ public class UserService {
         }
 
         return UserMapper.INSTANCE.toDto(Optional.of(user));
+    }
+
+    public User getAuthenticateUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication);
+
+		return (User) authentication.getPrincipal();
     }
 
 }
