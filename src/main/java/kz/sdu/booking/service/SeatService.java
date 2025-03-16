@@ -43,11 +43,17 @@ public class SeatService {
      * @throws UserInputException Если место не найдено
      */
     public SeatDto getSeatById(final Long id) throws UserInputException {
+        final Seat seat = findById(id);
+
+        return convertAndFill(seat);
+    }
+
+    public Seat findById(final Long id) throws UserInputException {
         final Seat seat = seatRepository.findById(id)
                                         .orElseThrow(() -> new UserInputException(Errors.MSG_SEAT_NOT_FOUND
                                                                                   + " (ID: " + id + ")"));
 
-        return convertAndFill(seat);
+        return seat;
     }
 
     public SeatDto convertAndFill(final Seat seat) {

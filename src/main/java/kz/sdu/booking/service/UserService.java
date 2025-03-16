@@ -93,8 +93,7 @@ public class UserService {
     }
 
     public User getAuthenticateUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication);
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		return (User) authentication.getPrincipal();
     }

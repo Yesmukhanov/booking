@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Getter
 public class ReservationRequestDto {
     private Long userId;
+    private Long seatId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 }

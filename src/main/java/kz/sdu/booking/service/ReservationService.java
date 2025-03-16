@@ -1,9 +1,13 @@
 package kz.sdu.booking.service;
 
+import kz.sdu.booking.handle.UserInputException;
 import kz.sdu.booking.mapper.ReservationMapper;
 import kz.sdu.booking.model.dto.ReservationDto;
 import kz.sdu.booking.model.dto.ReservationRequestDto;
 import kz.sdu.booking.model.entity.Reservation;
+import kz.sdu.booking.model.entity.Seat;
+import kz.sdu.booking.model.entity.User;
+import kz.sdu.booking.model.enums.Role;
 import kz.sdu.booking.repository.ReservationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,9 +18,17 @@ import java.util.Objects;
 @AllArgsConstructor
 public class ReservationService {
     private final ReservationRepository reservationRepository;
+    private final UserService userService;
+    private final SeatService seatService;
 
-    public ReservationDto create(final ReservationRequestDto request) {
-        final Reservation reservation = reservationRepository.save(Reservation.newDraft(request));
+    public ReservationDto create(final ReservationRequestDto request) throws UserInputException {
+        final User user = userService.getAuthenticateUser();
+        if (user.getRole().equals(Role.ADMIN) || user.getRole().equals(Role.LIBRARIAN)) {
+            return new ReservationDto();
+        }
+
+        final Seat seat = seatService.findById(request.getSeatId());
+        final Reservation reservation = reservationRepository.save(Reservation.newDraft(request, user, seat));
 
         return convertAndFill(reservation);
     }

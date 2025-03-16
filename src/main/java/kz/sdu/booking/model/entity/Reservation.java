@@ -40,10 +40,13 @@ public class Reservation extends AbstractAuditable<Reservation, Long> {
 	@Enumerated(EnumType.STRING)
 	private ReservationStatus status;
 
-	public static Reservation newDraft(final ReservationRequestDto request) {
+	public static Reservation newDraft(final ReservationRequestDto request, final User user, final Seat seat) {
 		final Reservation reservation = new Reservation();
 		reservation.setStartTime(request.getStartTime());
 		reservation.setEndTime(request.getEndTime());
+		reservation.setUser(user);
+		reservation.setSeat(seat);
+		reservation.setStatus(ReservationStatus.ACTIVE);
 
 		return reservation;
 	}
