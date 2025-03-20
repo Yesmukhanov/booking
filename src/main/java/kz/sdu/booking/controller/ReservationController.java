@@ -5,10 +5,15 @@ import kz.sdu.booking.model.dto.ReservationDto;
 import kz.sdu.booking.model.dto.ReservationRequestDto;
 import kz.sdu.booking.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -28,6 +33,33 @@ public class ReservationController {
 	@PostMapping("/create")
 	public ReservationDto createReservation(@RequestBody final ReservationRequestDto request) throws UserInputException {
 		return reservationService.create(request);
+	}
+
+	/**
+	 * Получает список бронирований по пользователю или месту.
+	 * <p/>
+	 * @param userId (необязательно) - ID пользователя для фильтрации
+	 * @param seatId (необязательно) - ID места для фильтрации
+	 * @return список бронирований в виде DTO
+	 */
+	@GetMapping
+	public List<ReservationDto> getReservations(
+		@RequestParam(required = false) final Long userId,
+		@RequestParam(required = false) final Long seatId
+	) {
+		return reservationService.getReservationList(userId, seatId);
+	}
+
+	/**
+	 * Получает детали бронирования по его идентификатору.
+	 * <p/>
+	 * @param id идентификатор бронирования
+	 * @return объект {@link ReservationDto}, содержащий детали бронирования
+	 * @throws UserInputException если бронирование с таким ID не найдено
+	 */
+	@GetMapping("get/{id}")
+	public ReservationDto getReservationById(@PathVariable Long id) throws UserInputException {
+		return reservationService.getReservationById(id);
 	}
 
 }

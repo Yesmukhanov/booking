@@ -6,6 +6,8 @@ import kz.sdu.booking.mapper.SeatMapper;
 import kz.sdu.booking.model.dto.ListResponse;
 import kz.sdu.booking.model.dto.SeatDto;
 import kz.sdu.booking.model.entity.Seat;
+import kz.sdu.booking.model.entity.User;
+import kz.sdu.booking.model.enums.Role;
 import kz.sdu.booking.repository.SeatRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor
 public class SeatService {
+    private final UserService userService;
     private final SeatRepository seatRepository;
 
     /**
@@ -56,7 +59,58 @@ public class SeatService {
         return seat;
     }
 
-    public SeatDto convertAndFill(final Seat seat) {
+    /**
+     * Блокирует место (доступно только ADMIN).
+     * <p/>
+     * @param id идентификатор места
+     * @return обновленный объект {@link SeatDto}
+     * @throws UserInputException если у пользователя нет прав или место не найдено
+     */
+    public SeatDto blockSeat(Long id) throws UserInputException {
+        validateAdminAccess();
+
+        final Seat seat =
+            seatRepository.findById(id)
+                          .orElseThrow(() -> new UserInputException(String.format(Errors.MSG_SEAT_NOT_FOUND, id)));
+
+        seat.setBlocked(true);
+        seatRepository.save(seat);
+
+        return convertAndFill(seat);
+    }
+
+    /**
+     * Разблокирует место (доступно только ADMIN).
+     * <p/>
+     * @param id идентификатор места
+     * @return обновленный объект {@link SeatDto}
+     * @throws UserInputException если у пользователя нет прав или место не найдено
+     */
+    public SeatDto unblockSeat(final Long id) throws UserInputException {
+        validateAdminAccess();
+
+        final Seat seat =
+            seatRepository.findById(id)
+                          .orElseThrow(() -> new UserInputException(String.format(Errors.MSG_SEAT_NOT_FOUND, id)));
+
+        seat.setBlocked(false);
+        seatRepository.save(seat);
+
+        return convertAndFill(seat);
+    }
+
+    /**
+     * Проверяет, является ли пользователь ADMIN.
+     * @throws UserInputException если пользователь не ADMIN
+     */
+    private void validateAdminAccess() throws UserInputException {
+        final User user = userService.getAuthenticateUser();
+        if (!user.getRole().equals(Role.ADMIN)) {
+            throw new UserInputException(Errors.MSG_ACCESS_DENIED);
+        }
+    }
+
+    private SeatDto convertAndFill(final Seat seat) {
         if (Objects.isNull(seat)) {
             return null;
         }

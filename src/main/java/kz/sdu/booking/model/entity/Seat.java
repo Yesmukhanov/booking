@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @Table(name = "t_seats")
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Seat extends AbstractAuditable<Seat, Long> {
@@ -31,4 +33,6 @@ public class Seat extends AbstractAuditable<Seat, Long> {
 
 	@OneToMany(mappedBy = "seat")
 	private List<Reservation> reservations;
+
+	private boolean blocked;
 }
