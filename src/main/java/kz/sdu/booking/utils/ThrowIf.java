@@ -1,4 +1,4 @@
-package kz.sdu.booking;
+package kz.sdu.booking.utils;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.annotation.Nullable;

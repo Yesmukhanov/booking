@@ -1,6 +1,6 @@
 package kz.sdu.booking.service.impl;
 
-import kz.sdu.booking.Errors;
+import kz.sdu.booking.utils.Errors;
 import kz.sdu.booking.handle.UserInputException;
 import kz.sdu.booking.model.dto.AuthenticationRequest;
 import kz.sdu.booking.model.dto.AuthenticationResponse;

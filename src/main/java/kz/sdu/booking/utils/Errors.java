@@ -1,4 +1,4 @@
-package kz.sdu.booking;
+package kz.sdu.booking.utils;
 
 public class Errors {
     public static String MSG_USER_IS_NULL = "Пользователь не найден";

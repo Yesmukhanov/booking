@@ -1,7 +1,7 @@
 package kz.sdu.booking.service;
 
-import kz.sdu.booking.Errors;
-import kz.sdu.booking.ThrowIf;
+import kz.sdu.booking.utils.Errors;
+import kz.sdu.booking.utils.ThrowIf;
 import kz.sdu.booking.handle.UserInputException;
 import kz.sdu.booking.mapper.ReservationMapper;
 import kz.sdu.booking.model.dto.ReservationDto;
@@ -16,7 +16,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
