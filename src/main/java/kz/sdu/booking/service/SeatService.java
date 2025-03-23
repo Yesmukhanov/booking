@@ -121,7 +121,11 @@ public class SeatService {
      * @return список доступных интервалов {@link TimeSlotDto}
      * @throws UserInputException если указана прошедшая дата
      */
-    public List<TimeSlotDto> getAvailableTimeSlots(final Long seatId, final LocalDate date) {
+    public List<TimeSlotDto> getAvailableTimeSlots(final Long seatId, final LocalDate date) throws UserInputException {
+        if (date.isBefore(LocalDate.now())) {
+            throw new UserInputException(Errors.MSG_PAST_DATE_NOT_ALLOWED);
+        }
+
         final LocalDateTime dayStart = date.atTime(9, 0);
         final LocalDateTime dayEnd = date.atTime(18, 0);
 
