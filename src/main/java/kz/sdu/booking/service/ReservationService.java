@@ -113,7 +113,7 @@ public class ReservationService {
      * @return объект {@link ReservationDto}, представляющий обновленное бронирование со статусом {@code CANCELLED}
      * @throws UserInputException если бронирование не найдено или у пользователя недостаточно прав
      */
-    public ReservationDto cancelReservation(final Long id) throws UserInputException {
+    public ReservationDto cancelReservationForAdmin(final Long id) throws UserInputException {
         // Получаем аутентифицированного пользователя
         final User user = userService.getAuthenticateUser();
 
@@ -134,4 +134,34 @@ public class ReservationService {
         return convertAndFill(reservation);
     }
 
+    /**
+     * Отменяет бронирование по его идентификатору
+     * @param id идентификатор бронирования
+     * @return объект {@link ReservationDto} с обновлённым статусом {@code CANCELLED}
+     * @throws UserInputException если, бронирование не найдено, у пользователя недостаточно прав, бронирование уже было отменено ранее
+     */
+    public ReservationDto cancelReservation(final Long id) throws UserInputException {
+        final User currentUser = userService.getAuthenticateUser();
+
+        final Reservation reservation =
+            reservationRepository.findById(id)
+                                 .orElseThrow(() -> new UserInputException(String.format(Errors.MSG_RESERVATION_NOT_FOUND, id)));
+
+        // Нельзя отменить уже отменённую бронь
+        if (reservation.getStatus() == ReservationStatus.CANCELLED) {
+            throw new UserInputException(Errors.MSG_RESERVATION_ALREADY_CANCELLED);
+        }
+
+        final boolean isAdminOrLibrarian = currentUser.getRole().equals(Role.ADMIN) || currentUser.getRole().equals(Role.LIBRARIAN);
+        final boolean isOwner = reservation.getUser().getId().equals(currentUser.getId());
+
+        if (!(isAdminOrLibrarian || isOwner)) {
+            throw new UserInputException(Errors.MSG_ACCESS_DENIED);
+        }
+
+        reservation.setStatus(ReservationStatus.CANCELLED);
+        reservationRepository.save(reservation);
+
+        return convertAndFill(reservation);
+    }
 }

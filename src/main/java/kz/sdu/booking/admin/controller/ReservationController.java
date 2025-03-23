@@ -28,6 +28,6 @@ public class ReservationController {
      */
     @PostMapping("/{id}/cancel")
     public ReservationDto cancelReservation(@PathVariable final Long id) throws UserInputException {
-        return reservationService.cancelReservation(id);
+        return reservationService.cancelReservationForAdmin(id);
     }
 }

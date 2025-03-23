@@ -7,4 +7,8 @@ public class Errors {
     public static final String MSG_SEAT_ALREADY_BOOKED = "Это место уже забронировано на выбранное время";
     public static final String MSG_RESERVATION_NOT_FOUND = "Бронирование с ID %d не найдено";
     public static final String MSG_ACCESS_DENIED = "У вас недостаточно прав для выполнения этой операции";
+    public static final String MSG_RESERVATION_ALREADY_CANCELLED = "Бронирование уже отменено";
+    public static final String MSG_PAST_DATE_NOT_ALLOWED = "Нельзя выбрать прошедшую дату";
+
+
 }

@@ -62,4 +62,16 @@ public class ReservationController {
 		return reservationService.getReservationById(id);
 	}
 
+	/**
+	 * Отменяет бронирование по его идентификатору
+	 * <p/>
+	 * @param id идентификатор бронирования
+	 * @return объект {@link ReservationDto}, представляющий обновленное бронирование
+	 * @throws UserInputException если бронирование не найдено или у пользователя недостаточно прав
+	 */
+	@PostMapping("/{id}/cancel")
+	public ReservationDto cancelReservation(@PathVariable final Long id) throws UserInputException {
+		return reservationService.cancelReservation(id);
+	}
+
 }

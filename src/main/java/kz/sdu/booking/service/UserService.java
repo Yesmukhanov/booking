@@ -1,5 +1,6 @@
 package kz.sdu.booking.service;
 
+import kz.sdu.booking.model.enums.Role;
 import kz.sdu.booking.utils.Errors;
 import kz.sdu.booking.handle.UserInputException;
 import kz.sdu.booking.mapper.UserMapper;
@@ -12,7 +13,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -84,6 +89,30 @@ public class UserService {
         return convertAndFill(user);
     }
 
+    /**
+     * Возвращает список всех пользователей, если текущий пользователь — ADMIN.
+     * @return список {@link UserDto}
+     * @throws UserInputException если у пользователя нет прав
+     */
+    public List<UserDto> getAllUsers() throws UserInputException {
+        if (!getAuthenticateUser().getRole().equals(Role.ADMIN)) {
+            throw new UserInputException(Errors.MSG_ACCESS_DENIED);
+        }
+
+        final List<User> userList = userRepository.findAll();
+        if (CollectionUtils.isEmpty(userList)) {
+            return Collections.emptyList();
+        }
+
+        return convertAndFillList(userList);
+    }
+
+    /**
+     * Конвертирует объект {@link User} в {@link UserDto}.
+     * <p/>
+     * @param user объект пользователя
+     * @return DTO-представление пользователя или {@code null}, если входной объект равен {@code null}
+     */
     public UserDto convertAndFill(final User user) {
         if (Objects.isNull(user)) {
             return null;
@@ -92,6 +121,30 @@ public class UserService {
         return UserMapper.INSTANCE.toDto(Optional.of(user));
     }
 
+    /**
+     * Конвертирует список пользователей {@link User} в список {@link UserDto}.
+     * <p/>
+     * @param userList список пользователей
+     * @return список DTO-представлений пользователей; если входной список пустой — возвращается пустой список
+     */
+    public List<UserDto> convertAndFillList(final List<User> userList) {
+        if (CollectionUtils.isEmpty(userList)) {
+            return Collections.emptyList();
+        }
+        final List<UserDto> userDtoList = new ArrayList<>();
+
+        for (final User user : userList) {
+            userDtoList.add(convertAndFill(user));
+        }
+
+        return userDtoList;
+    }
+
+    /**
+     * Получает текущего аутентифицированного пользователя из контекста безопасности.
+     * @return объект {@link User}, представляющий текущего пользователя
+     * @throws ClassCastException если объект principal не является экземпляром {@link User}
+     */
     public User getAuthenticateUser() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

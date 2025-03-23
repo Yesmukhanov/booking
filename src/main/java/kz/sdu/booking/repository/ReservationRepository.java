@@ -25,4 +25,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findByUserId(Long userId);
 
     List<Reservation> findBySeatId(Long seatId);
+
+    List<Reservation> findBySeatIdAndStartTimeBetween(Long seatId, LocalDateTime start, LocalDateTime end);
 }
