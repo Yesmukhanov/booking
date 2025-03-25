@@ -2,11 +2,7 @@ package kz.sdu.booking.model.entity;
 
 import jakarta.persistence.*;
 import kz.sdu.booking.model.enums.Role;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.jpa.domain.AbstractAuditable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -44,7 +40,7 @@ public class User extends AbstractAuditable<User, Long> implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<Reservation> reservations;
 
 	@Column(nullable = false)

@@ -14,7 +14,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/rest/sdu/booking/admin/reservations", produces = APPLICATION_JSON_VALUE)
-public class ReservationController {
+public class AdminReservationController {
 
     private final ReservationService reservationService;
 
