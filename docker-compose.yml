@@ -17,7 +17,6 @@ services:
 
   app:
     container_name: my-spring-app
-    image: my-spring-boot-app
     build:
       context: .
       dockerfile: Dockerfile
