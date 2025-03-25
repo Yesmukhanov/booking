@@ -14,6 +14,8 @@ COPY src src
 # Make gradlew executable
 RUN chmod +x ./gradlew
 
+# Install findutils to provide xargs
+RUN apt-get update && apt-get install -y findutils
 
 # Build the application
 RUN ./gradlew build
@@ -21,14 +23,8 @@ RUN ./gradlew build
 # Create final image
 FROM openjdk:17-jdk-slim
 
-# Set the working directory inside the container
 WORKDIR /app
-
-# Copy the built JAR file from the builder stage
 COPY --from=builder /app/build/libs/*.jar app.jar
 
-# Expose the application port
 EXPOSE 8080
-
-# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
