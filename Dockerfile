@@ -14,6 +14,7 @@ COPY src src
 # Make gradlew executable
 RUN chmod +x ./gradlew
 
+
 # Build the application
 RUN ./gradlew build
 
