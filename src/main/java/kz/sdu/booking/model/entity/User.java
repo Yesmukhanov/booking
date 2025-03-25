@@ -44,6 +44,7 @@ public class User extends AbstractAuditable<User, Long> implements UserDetails {
 	private List<Reservation> reservations;
 
 	@Column(nullable = false)
+	@Builder.Default
 	private Boolean isDeleted = false;
 
 	@Override

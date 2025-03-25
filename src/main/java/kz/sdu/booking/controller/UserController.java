@@ -5,6 +5,7 @@ import kz.sdu.booking.model.dto.UserDto;
 import kz.sdu.booking.model.dto.UserEditRequestDto;
 import kz.sdu.booking.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,5 +58,10 @@ public class UserController {
     @PostMapping("/delete/{id}")
     public UserDto delete(@PathVariable("id") final Long id) throws UserInputException {
         return userService.deleteUser(id);
+    }
+
+    @GetMapping("/me")
+    public UserDto getMe() {
+        return userService.getMe();
     }
 }

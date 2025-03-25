@@ -118,7 +118,7 @@ public class UserService {
             return null;
         }
 
-        return UserMapper.INSTANCE.toDto(Optional.of(user));
+        return UserMapper.INSTANCE.toDto(user);
     }
 
     /**
@@ -151,4 +151,11 @@ public class UserService {
 		return (User) authentication.getPrincipal();
     }
 
+    /**
+     *
+     * @return
+     */
+    public UserDto getMe() {
+        return convertAndFill(getAuthenticateUser());
+    }
 }
