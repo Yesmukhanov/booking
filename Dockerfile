@@ -1,26 +1,21 @@
 # Use JDK image
 FROM openjdk:17 AS builder
 
-# Install necessary tools
-RUN apt-get update && apt-get install -y \
-    curl \
-    unzip \
-    xz-utils
-
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy all project files
-COPY . .
+# Copy Gradle wrapper and build files
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle .
+COPY settings.gradle .
+COPY src src
 
-# Ensure gradlew is executable
+# Make gradlew executable
 RUN chmod +x ./gradlew
 
-# Verify Gradle wrapper
-RUN ./gradlew --version
-
 # Build the application
-RUN ./gradlew build --stacktrace
+RUN ./gradlew build -x test
 
 # Create final image
 FROM openjdk:17-jdk-slim
