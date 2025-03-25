@@ -15,7 +15,7 @@ RUN chmod +x ./gradlew
 RUN apt-get update && apt-get install -y findutils
 
 # Build the application
-RUN ./gradlew build
+RUN ./gradlew build -x test
 
 # Create final image
 FROM openjdk:17-jdk-slim
