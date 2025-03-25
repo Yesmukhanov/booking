@@ -14,6 +14,10 @@ RUN chmod +x ./gradlew
 # Install findutils (provides xargs) using apt-get
 RUN apt-get update && apt-get install -y findutils
 
+
+RUN ./gradlew --no-daemon downloadDependencies
+
+
 # Build the application
 RUN ./gradlew build -x test
 
