@@ -1,4 +1,5 @@
-FROM openjdk:17 AS builder
+# Use a Debian-based JDK image for the builder stage
+FROM openjdk:17-slim AS builder
 
 WORKDIR /app
 
@@ -10,11 +11,13 @@ COPY src src
 
 RUN chmod +x ./gradlew
 
-# Install findutils using apk (for Alpine-based images)
-RUN apk update && apk add --no-cache findutils
+# Install findutils (provides xargs) using apt-get
+RUN apt-get update && apt-get install -y findutils
 
+# Build the application
 RUN ./gradlew build
 
+# Create final image
 FROM openjdk:17-jdk-slim
 
 WORKDIR /app
