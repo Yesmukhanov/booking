@@ -15,7 +15,7 @@ COPY src src
 RUN chmod +x ./gradlew
 
 # Build the application
-RUN ./gradlew build -x test
+RUN ./gradlew build
 
 # Create final image
 FROM openjdk:17-jdk-slim
