@@ -15,8 +15,6 @@ RUN chmod +x ./gradlew
 RUN apt-get update && apt-get install -y findutils
 
 
-RUN ./gradlew --no-daemon downloadDependencies
-
 
 # Build the application
 RUN ./gradlew build -x test
