@@ -28,4 +28,9 @@ public class AdminUserController {
     public List<UserDto> getAllUsers() throws UserInputException {
         return userService.getAllUsers();
     }
+
+    @GetMapping("/test")
+    public String test() {
+        return "userService.getAllUsers()";
+    }
 }
