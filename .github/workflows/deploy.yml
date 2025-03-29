@@ -2,7 +2,7 @@ name: deploy by runner
 
 on:
   push:
-    branches: [ "master", "develop" ]
+    branches: ["master", "develop"]
 
 jobs:
   prepare-environment:
@@ -11,11 +11,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Stop and remove containers, networks
-        run: docker-compose down
+      - name: Stop and remove ONLY the app container
+        run: |
+          docker-compose down || true
 
-      - name: Remove unused data
-        run: docker system prune -a -f
+      - name: Remove only unused images (without pruning volumes or database container)
+        run: docker image prune -a -f
 
   deploy:
     runs-on: self-hosted
@@ -24,5 +25,5 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Docker compose up
-        run: docker-compose up -d
+      - name: Docker compose up (only the app container)
+        run: docker-compose up -d --build

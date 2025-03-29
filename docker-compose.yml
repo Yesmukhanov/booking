@@ -1,22 +1,6 @@
 version: '3.8'
 
 services:
-  db:
-    container_name: postgres_db
-    image: postgres:15
-    environment:
-      POSTGRES_DB: booking_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      PGDATA: /var/lib/postgresql/data
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    networks:
-      - booking_network
-    restart: unless-stopped
-
   app:
     container_name: my-spring-app
     build:
@@ -30,15 +14,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/booking_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-    depends_on:
-      - db
     networks:
       - booking_network
     restart: unless-stopped
 
-volumes:
-  postgres_data:
-
 networks:
   booking_network:
-    driver: bridge
+    external: true
