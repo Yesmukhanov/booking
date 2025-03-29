@@ -2,7 +2,7 @@ spring:
   application:
     name: booking
   datasource:
-    url: jdbc:postgresql://db:5432/booking_db
+    url: jdbc:postgresql://postgres_db:5432/booking_db
     username: postgres
     password: postgres
   jpa:
