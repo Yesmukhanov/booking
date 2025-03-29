@@ -8,6 +8,7 @@ COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 COPY src src
+ENV JAVA_OPTS="-Xms256m -Xmx512m"
 
 RUN chmod +x ./gradlew
 
