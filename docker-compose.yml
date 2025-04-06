@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   app:
@@ -11,7 +11,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       JAVA_OPTS: "-Xms256m -Xmx512m"
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_db:5432/booking_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/booking_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
     networks:
