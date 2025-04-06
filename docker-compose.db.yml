@@ -13,9 +13,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./init-db:/docker-entrypoint-initdb.d
     ports:
-      - "5432:5432"
+      - "5433:5432"  # Exposing host port 5433 mapped to container port 5432
     networks:
-      - booking_network
+      booking_network:
+        aliases:
+          - postgres_db
     restart: unless-stopped
 
 volumes:
