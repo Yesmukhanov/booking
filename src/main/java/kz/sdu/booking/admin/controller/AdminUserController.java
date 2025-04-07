@@ -17,20 +17,26 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class AdminUserController {
 
-    private final UserService userService;
+	private final UserService userService;
 
-    /**
-     * Получает список всех пользователей (доступно только ADMIN).
-     * @return список {@link UserDto}
-     * @throws UserInputException если у пользователя недостаточно прав
-     */
-    @GetMapping
-    public List<UserDto> getAllUsers() throws UserInputException {
-        return userService.getAllUsers();
-    }
+	/**
+	 * Получает список всех пользователей (доступно только ADMIN).
+	 *
+	 * @return список {@link UserDto}
+	 * @throws UserInputException если у пользователя недостаточно прав
+	 */
+	@GetMapping
+	public List<UserDto> getAllUsers() throws UserInputException {
+		return userService.getAllUsers();
+	}
 
-    @GetMapping("/test")
-    public String test() {
-        return "userService.getAllUsers()";
-    }
+	@GetMapping("/test")
+	public String test() {
+		return "userService.getAllUsers()";
+	}
+
+	@GetMapping("/test1")
+	public String test1() {
+		return "userService.getAllUsers()";
+	}
 }
