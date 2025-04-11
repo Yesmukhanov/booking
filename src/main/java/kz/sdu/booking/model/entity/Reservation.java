@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -40,6 +41,10 @@ public class Reservation extends AbstractAuditable<Reservation, Long> {
 	@Enumerated(EnumType.STRING)
 	private ReservationStatus status;
 
+	private Integer floor;
+
+	private LocalDate date;
+
 	public static Reservation newDraft(final ReservationRequestDto request, final User user, final Seat seat) {
 		final Reservation reservation = new Reservation();
 		reservation.setStartTime(request.getStartTime());
@@ -47,7 +52,16 @@ public class Reservation extends AbstractAuditable<Reservation, Long> {
 		reservation.setUser(user);
 		reservation.setSeat(seat);
 		reservation.setStatus(ReservationStatus.ACTIVE);
+		reservation.setFloor(resolveFloorBySeatId(seat.getId()));
+		reservation.setDate(request.getDate());
 
 		return reservation;
+	}
+
+	private static int resolveFloorBySeatId(Long seatId) {
+		if (seatId <= 100) return 0;
+		if (seatId <= 150) return 1;
+
+		return 2;
 	}
 }

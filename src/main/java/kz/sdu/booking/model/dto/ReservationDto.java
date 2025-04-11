@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,4 +21,6 @@ public class ReservationDto {
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 	private ReservationStatus status;
+	private Integer floor;
+	private LocalDate date;
 }

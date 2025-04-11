@@ -58,7 +58,7 @@ public class ReservationController {
 	 * @throws UserInputException если бронирование с таким ID не найдено
 	 */
 	@GetMapping("get/{id}")
-	public ReservationDto getReservationById(@PathVariable Long id) throws UserInputException {
+	public ReservationDto getReservationById(@PathVariable final Long id) throws UserInputException {
 		return reservationService.getReservationById(id);
 	}
 
