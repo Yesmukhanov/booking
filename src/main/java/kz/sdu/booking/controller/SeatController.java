@@ -5,10 +5,7 @@ import kz.sdu.booking.model.dto.ListResponse;
 import kz.sdu.booking.model.dto.SeatDto;
 import kz.sdu.booking.service.SeatService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -24,8 +21,8 @@ public class SeatController {
 	 * @return
 	 */
 	@GetMapping("/all")
-	public ListResponse<SeatDto> getAllSeats() {
-		return seatService.getAllSeats();
+	public ListResponse<SeatDto> getAllSeats(@RequestParam(name = "floor", defaultValue = "0") int floor) {
+		return seatService.getAllSeats(floor);
 	}
 
 	/**

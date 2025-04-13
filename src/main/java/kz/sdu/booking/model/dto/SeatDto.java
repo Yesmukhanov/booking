@@ -15,5 +15,6 @@ public class SeatDto {
 	private Integer id;
 	private String number;
 	private String location;
+	private int floor;
 	private SeatStatus status;
 }

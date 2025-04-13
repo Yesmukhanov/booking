@@ -31,8 +31,11 @@ public class Seat extends AbstractAuditable<Seat, Long> {
 	@Enumerated(value = EnumType.STRING)
 	private SeatStatus status;
 
+	private int floor;
+
 	@OneToMany(mappedBy = "seat")
 	private List<Reservation> reservations;
 
-	private boolean blocked;
+	@Builder.Default
+	private boolean blocked = false;
 }
