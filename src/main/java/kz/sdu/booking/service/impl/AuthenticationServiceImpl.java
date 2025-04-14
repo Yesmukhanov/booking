@@ -1,11 +1,9 @@
 package kz.sdu.booking.service.impl;
 
+import kz.sdu.booking.mapper.UserMapper;
+import kz.sdu.booking.model.dto.*;
 import kz.sdu.booking.utils.Errors;
 import kz.sdu.booking.handle.UserInputException;
-import kz.sdu.booking.model.dto.AuthenticationRequest;
-import kz.sdu.booking.model.dto.AuthenticationResponse;
-import kz.sdu.booking.model.dto.RefreshTokenRequest;
-import kz.sdu.booking.model.dto.RegisterRequest;
 import kz.sdu.booking.model.entity.User;
 import kz.sdu.booking.model.enums.Role;
 import kz.sdu.booking.service.AuthenticationService;
@@ -27,6 +25,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	private final PasswordEncoder passwordEncoder;
 	private final kz.sdu.booking.service.JwtService jwtService;
 	private final AuthenticationManager authenticationManager;
+	private final UserMapper userMapper;
 
 	public AuthenticationResponse register(final RegisterRequest registerRequest) throws UserInputException {
 		final Optional<User> existingUserOptional = userRepository.findByEmail(registerRequest.getEmail());
@@ -49,10 +48,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 		final String accessToken = jwtService.generateToken(user);
 		final String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+		final UserDto userDto = userMapper.toDto(user);
 
 		return AuthenticationResponse.builder()
 									 .accessToken(accessToken)
 									 .refreshToken(refreshToken)
+									 .user(userDto)
 									 .build();
 
 	}
@@ -70,10 +71,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 		final String accessToken = jwtService.generateToken(user);
 		final String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+		final UserDto userDto = userMapper.toDto(user);
 
 		return AuthenticationResponse.builder()
 									 .accessToken(accessToken)
 									 .refreshToken(refreshToken)
+									 .user(userDto)
 									 .build();
 
 	}
@@ -84,10 +87,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		if (jwtService.isTokenValid(refreshTokenRequest.getRefreshToken(), user)) {
 			final String accessToken = jwtService.generateToken(user);
 			final String refreshToken = refreshTokenRequest.getRefreshToken();
+			final UserDto userDto = userMapper.toDto(user);
+
 
 			return AuthenticationResponse.builder()
 										 .accessToken(accessToken)
 										 .refreshToken(refreshToken)
+										 .user(userDto)
 										 .build();
 		}
 
