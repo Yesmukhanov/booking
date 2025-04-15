@@ -50,7 +50,7 @@ public class SeatService {
 				.peek(seat -> {
 					boolean reserved = reservations.stream()
 							.anyMatch(reservation -> Objects.requireNonNull(reservation.getSeat().getId()).equals(seat.getId()));
-					seat.setStatus(reserved ? SeatStatus.RESERVED : SeatStatus.AVAILABLE);
+					seat.setStatus(reserved ? SeatStatus.RESERVED : seat.getStatus());
 				})
 				.toList();
 
