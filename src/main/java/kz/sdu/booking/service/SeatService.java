@@ -10,6 +10,7 @@ import kz.sdu.booking.model.entity.Seat;
 import kz.sdu.booking.model.entity.User;
 import kz.sdu.booking.model.enums.ReservationStatus;
 import kz.sdu.booking.model.enums.Role;
+import kz.sdu.booking.model.enums.SeatStatus;
 import kz.sdu.booking.repository.ReservationRepository;
 import kz.sdu.booking.repository.SeatRepository;
 import kz.sdu.booking.utils.Errors;
@@ -38,13 +39,25 @@ public class SeatService {
 	 * @return {@link ListResponse} с данными о местах и их количеством.
 	 * Если список пуст, возвращает {@link ListResponse#empty()}.
 	 */
-	public ListResponse<SeatDto> getAllSeats(final int floor) {
+	public ListResponse<SeatDto> getAllSeats(final int floor,
+											 final LocalDate date,
+											 final LocalDateTime startTime,
+											 final LocalDateTime endTime) {
 		final List<Seat> allSeatList = seatRepository.findAllByFloor(floor);
+		final List<Reservation> reservations = reservationRepository.findAllByDateAndTime(date, startTime, endTime, floor);
+		final List<Seat> seatList = allSeatList
+				.stream()
+				.peek(seat -> {
+					boolean reserved = reservations.stream()
+							.anyMatch(reservation -> Objects.requireNonNull(reservation.getSeat().getId()).equals(seat.getId()));
+					seat.setStatus(reserved ? SeatStatus.RESERVED : SeatStatus.AVAILABLE);
+				})
+				.toList();
 
-		if (CollectionUtils.isEmpty(allSeatList)) {
+		if (CollectionUtils.isEmpty(seatList)) {
 			return ListResponse.empty();
 		}
-		final List<SeatDto> seatDtoList = SeatMapper.INSTANCE.toDtoList(allSeatList);
+		final List<SeatDto> seatDtoList = SeatMapper.INSTANCE.toDtoList(seatList);
 
 		return new ListResponse<>(seatDtoList, seatDtoList.size());
 	}

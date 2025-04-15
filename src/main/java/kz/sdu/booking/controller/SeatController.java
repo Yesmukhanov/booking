@@ -7,6 +7,9 @@ import kz.sdu.booking.service.SeatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -21,8 +24,11 @@ public class SeatController {
 	 * @return
 	 */
 	@GetMapping("/all")
-	public ListResponse<SeatDto> getAllSeats(@RequestParam(name = "floor", defaultValue = "0") int floor) {
-		return seatService.getAllSeats(floor);
+	public ListResponse<SeatDto> getAllSeats(@RequestParam(name = "floor", defaultValue = "0") int floor,
+											 @RequestParam(name = "date") LocalDate date,
+											 @RequestParam(name = "startTime") LocalDateTime startTime,
+											 @RequestParam(name = "endTime") LocalDateTime endTime) {
+		return seatService.getAllSeats(floor, date, startTime, endTime);
 	}
 
 	/**
