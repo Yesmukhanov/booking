@@ -52,7 +52,7 @@ public class JwtServiceImpl implements JwtService {
 				.builder()
 				.subject(userDetails.getUsername())
 				.issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+				.expiration(new Date(System.currentTimeMillis() + 100000 * 60 * 24))
 				.signWith(getSignKey(), SignatureAlgorithm.HS256)
 				.compact();
 	}
@@ -77,7 +77,7 @@ public class JwtServiceImpl implements JwtService {
 				.claims(extraClaims)
 				.subject(userDetails.getUsername())
 				.issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis() + 604800000))
+				.expiration(new Date(System.currentTimeMillis() + 100000 * 60 * 100))
 				.signWith(getSignKey(), SignatureAlgorithm.HS256)
 				.compact();
 	}
