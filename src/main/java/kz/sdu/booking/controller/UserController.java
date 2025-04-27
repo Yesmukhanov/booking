@@ -4,6 +4,7 @@ import kz.sdu.booking.handle.UserInputException;
 import kz.sdu.booking.model.dto.UserDto;
 import kz.sdu.booking.model.dto.UserEditRequestDto;
 import kz.sdu.booking.model.dto.UserStatisticsDto;
+import kz.sdu.booking.service.ReservationService;
 import kz.sdu.booking.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final ReservationService reservationService;
 
     /**
      * Находит пользователя по идентификатору
@@ -78,6 +80,6 @@ public class UserController {
     public UserStatisticsDto getUserStatistics(
         @RequestParam final Long userId
     ) throws UserInputException {
-        return userService.getUserStatistics(userId);
+        return reservationService.getUserStatistics(userId);
     }
 }
