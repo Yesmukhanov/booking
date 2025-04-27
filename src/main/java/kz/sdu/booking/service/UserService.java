@@ -34,9 +34,11 @@ public class UserService {
      * @return Информация о пользователе
      */
     public UserDto findUserById(final Long id) throws UserInputException {
-        final User user = userRepository.findById(id).orElseThrow(() -> new UserInputException(Errors.MSG_USER_IS_NULL));
+        return convertAndFill(find(id));
+    }
 
-        return convertAndFill(user);
+    public User find(final Long id) throws UserInputException {
+        return userRepository.findById(id).orElseThrow(() -> new UserInputException(Errors.MSG_USER_IS_NULL));
     }
 
     /**

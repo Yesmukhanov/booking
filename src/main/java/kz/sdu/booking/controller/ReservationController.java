@@ -50,68 +50,13 @@ public class ReservationController {
 	 * @param seatId (необязательно) - ID места для фильтрации
 	 * @return список бронирований в виде DTO
 	 */
-//	@GetMapping
-//	public List<ReservationDto> getReservations(
-//		@RequestParam(required = false) final Long userId,
-//		@RequestParam(required = false) final Long seatId
-//	) {
-//		return reservationService.getReservationList(userId, seatId);
-//	}
-
 	@GetMapping
 	public List<ReservationDto> getReservations(
 		@RequestParam(required = false) final Long userId,
 		@RequestParam(required = false) final Long seatId
 	) {
-		List<ReservationDto> reservations = new ArrayList<>();
-
-		reservations.add(new ReservationDto(
-				1L,
-				new UserDto(1L, "John", "Doe", "john.doe@example.com", Role.STUDENT, false),
-				new SeatDto(1, "S-101", "Library A", 1, SeatStatus.AVAILABLE),
-				LocalDateTime.now(),
-				LocalDateTime.now().plusHours(2),
-				ReservationStatus.ACTIVE,
-				1,
-				LocalDate.now()
-		));
-
-		reservations.add(new ReservationDto(
-				2L,
-				new UserDto(2L, "Jane", "Smith", "jane.smith@example.com", Role.STUDENT, false),
-				new SeatDto(2, "S-102", "Library B", 2, SeatStatus.RESERVED),
-				LocalDateTime.now(),
-				LocalDateTime.now().plusHours(2),
-				ReservationStatus.CANCELLED,
-				2,
-				LocalDate.now()
-		));
-
-		reservations.add(new ReservationDto(
-				3L,
-				new UserDto(3L, "Alice", "Brown", "alice.brown@example.com", Role.STUDENT, false),
-				new SeatDto(3, "S-103", "Library C", 3, SeatStatus.OCCUPIED),
-				LocalDateTime.now(),
-				LocalDateTime.now().plusHours(2),
-				ReservationStatus.EXPIRED,
-				3,
-				LocalDate.now()
-		));
-
-		reservations.add(new ReservationDto(
-				4L,
-				new UserDto(4L, "Bob", "White", "bob.white@example.com", Role.STUDENT, false),
-				new SeatDto(4, "S-104", "Library D", 4, SeatStatus.BLOCKED),
-				LocalDateTime.now(),
-				LocalDateTime.now().plusHours(2),
-				ReservationStatus.RESERVED,
-				4,
-				LocalDate.now()
-		));
-
-		return reservations;
+		return reservationService.getReservationList(userId, seatId);
 	}
-
 
 	/**
 	 * Получает детали бронирования по его идентификатору.
@@ -135,6 +80,20 @@ public class ReservationController {
 	@PostMapping("/{id}/cancel")
 	public ReservationDto cancelReservation(@PathVariable final Long id) throws UserInputException {
 		return reservationService.cancelReservation(id);
+	}
+
+	/**
+	 * Создаёт новое бронирование, повторяя последнее активное бронирование пользователя
+	 * <p/>
+	 * @param userId Идентификатор пользователя
+	 * @return объект {@link ReservationDto}, представляющий новое бронирование
+	 * @throws UserInputException если предыдущее бронирование не найдено или место недоступно
+	 */
+	@PostMapping("/reservations/repeat-last")
+	public ReservationDto repeatLastBooking(
+		@RequestParam final Long userId
+	) throws UserInputException {
+		return reservationService.repeatLastReservation(userId);
 	}
 
 }

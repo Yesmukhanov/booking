@@ -1,5 +1,6 @@
 package kz.sdu.booking.service;
 
+import kz.sdu.booking.model.dto.UserDto;
 import kz.sdu.booking.utils.Errors;
 import kz.sdu.booking.utils.ThrowIf;
 import kz.sdu.booking.handle.UserInputException;
@@ -16,9 +17,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -164,4 +169,54 @@ public class ReservationService {
 
         return convertAndFill(reservation);
     }
+
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    /**
+     * Повторяет последнее активное бронирование пользователя.
+     *
+     * @param userId идентификатор пользователя
+     * @return новое бронирование в виде {@link ReservationDto}
+     * @throws UserInputException если последнее бронирование не найдено или место занято
+     */
+    public ReservationDto repeatLastReservation(final Long userId) throws UserInputException {
+        // 1. Получить пользователя
+        final User user = userService.find(userId);
+
+        // 2. Найти последнюю бронь пользователя
+        final Optional<Reservation> lastReservationOpt =
+            reservationRepository.findByUserId(userId)
+                                 .stream()
+                                 .filter(reservation -> reservation.getStatus() == ReservationStatus.ACTIVE
+                                                        || reservation.getStatus() == ReservationStatus.RESERVED)
+                                 .max(Comparator.comparing(Reservation::getStartTime));
+
+        if (lastReservationOpt.isEmpty()) {
+            throw new UserInputException("У вас нет прошлых бронирований для повтора.");
+        }
+
+        final Reservation lastReservation = lastReservationOpt.get();
+
+        // 3. Проверить, свободно ли место на новое время
+        final LocalDateTime newStartTime = LocalDateTime.now();
+        final LocalDateTime newEndTime = newStartTime.plusHours(2);
+
+        final Seat seat = lastReservation.getSeat();
+        final boolean seatAlreadyBooked = reservationRepository.existsBySeatAndTime(seat, newStartTime, newEndTime);
+        ThrowIf.isTrue(seatAlreadyBooked, Errors.MSG_SEAT_ALREADY_BOOKED);
+
+        final ReservationRequestDto newRequest = new ReservationRequestDto(seat.getId(), newStartTime, newEndTime, LocalDate.now());
+
+        final Reservation newReservation = Reservation.newDraft(newRequest, user, seat);
+
+        // 5. Сохраняем новое бронирование
+        reservationRepository.save(newReservation);
+
+        // 6. Возвращаем результат
+        return convertAndFill(newReservation);
+    }
+
 }
