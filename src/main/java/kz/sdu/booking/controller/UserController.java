@@ -3,6 +3,7 @@ package kz.sdu.booking.controller;
 import kz.sdu.booking.handle.UserInputException;
 import kz.sdu.booking.model.dto.UserDto;
 import kz.sdu.booking.model.dto.UserEditRequestDto;
+import kz.sdu.booking.model.dto.UserStatisticsDto;
 import kz.sdu.booking.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -62,5 +64,20 @@ public class UserController {
     @GetMapping("/me")
     public UserDto getMe() {
         return userService.getMe();
+    }
+
+    /**
+     * Получает статистику по пользователю:
+     * сколько часов он находился в библиотеке, сколько бронирований за месяц,
+     * и его рекорды по длительности бронирования.
+     * <p/>
+     * @param userId идентификатор пользователя
+     * @return объект {@link UserStatisticsDto} со статистикой пользователя
+     */
+    @GetMapping("/statistics")
+    public UserStatisticsDto getUserStatistics(
+        @RequestParam final Long userId
+    ) throws UserInputException {
+        return userService.getUserStatistics(userId);
     }
 }

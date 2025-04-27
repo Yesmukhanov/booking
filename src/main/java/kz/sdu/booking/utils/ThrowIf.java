@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.annotation.Nullable;
 import kz.sdu.booking.handle.UserInputException;
 
+import java.util.Objects;
+
 public class ThrowIf {
 
     public static void isTrue(
@@ -14,4 +16,14 @@ public class ThrowIf {
             throw new UserInputException(msg);
         }
     }
+
+    public static void isNull(
+        @Nullable final Object obj,
+        @NotNull final String msg
+    ) throws UserInputException {
+        if (Objects.isNull(obj)) {
+            throw new UserInputException(msg);
+        }
+    }
+
 }

@@ -9,6 +9,7 @@ public class Errors {
     public static final String MSG_ACCESS_DENIED = "У вас недостаточно прав для выполнения этой операции";
     public static final String MSG_RESERVATION_ALREADY_CANCELLED = "Бронирование уже отменено";
     public static final String MSG_PAST_DATE_NOT_ALLOWED = "Нельзя выбрать прошедшую дату";
+    public static final String MSG_USER_ID_REQUIRED = "Идентификатор пользователя обязателен";
 
 
 }

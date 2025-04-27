@@ -54,6 +54,19 @@ public class ReservationService {
     }
 
     /**
+     * Возвращает список всех бронирований пользователя по его идентификатору.
+     *
+     * @param userId идентификатор пользователя
+     * @return список бронирований
+     */
+    public List<Reservation> findByUserId(final Long userId) throws UserInputException {
+        ThrowIf.isNull(userId, Errors.MSG_USER_ID_REQUIRED);
+
+        return reservationRepository.findByUserId(userId);
+    }
+
+
+    /**
      * Получает список бронирований по идентификатору пользователя или места.
      * <p/>
      * @param userId идентификатор пользователя
@@ -79,9 +92,9 @@ public class ReservationService {
      * @return объект {@link ReservationDto}, содержащий информацию о бронировании
      * @throws UserInputException если бронирование с указанным ID не найдено
      */
-    public ReservationDto getReservationById(Long id) throws UserInputException {
+    public ReservationDto getReservationById(final Long id) throws UserInputException {
         final Reservation reservation = reservationRepository.findById(id)
-                                                       .orElseThrow(() -> new UserInputException(String.format(Errors.MSG_RESERVATION_NOT_FOUND, id)));
+                                                             .orElseThrow(() -> new UserInputException(String.format(Errors.MSG_RESERVATION_NOT_FOUND, id)));
 
         return convertAndFill(reservation);
     }

@@ -1,5 +1,8 @@
 package kz.sdu.booking.service;
 
+import kz.sdu.booking.model.dto.UserStatisticsDto;
+import kz.sdu.booking.model.entity.Reservation;
+import kz.sdu.booking.model.enums.ReservationStatus;
 import kz.sdu.booking.model.enums.Role;
 import kz.sdu.booking.utils.Errors;
 import kz.sdu.booking.handle.UserInputException;
@@ -15,17 +18,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final ReservationService reservationService;
 
     /**
      * Находит пользователя по идентификатору
@@ -160,4 +164,55 @@ public class UserService {
     public UserDto getMe() {
         return convertAndFill(getAuthenticateUser());
     }
+
+    /**
+     * Возвращает статистику пользователя по его бронированиям.
+     * <p/>
+     * @param userId идентификатор пользователя
+     * @return объект {@link UserStatisticsDto} со статистикой
+     */
+    public UserStatisticsDto getUserStatistics(final Long userId) throws UserInputException {
+        // Получаем все бронирования пользователя
+        final List<Reservation> reservations = reservationService.findByUserId(userId);
+
+        if (reservations.isEmpty()) {
+            return new UserStatisticsDto(0, 0, 0, 0, 0);
+        }
+
+        int totalMinutes = 0;
+        int bookingDaysInMonth = 0;
+        int recordHours = 0;
+        int recordDay = 0;
+
+        final LocalDate currentMonth = LocalDate.now();
+
+        for (final Reservation reservation : reservations) {
+            if (reservation.getStatus() == ReservationStatus.ACTIVE || reservation.getStatus() == ReservationStatus.RESERVED) {
+                // Считаем длительность
+                if (reservation.getStartTime() != null && reservation.getEndTime() != null) {
+                    int minutes = (int) java.time.Duration.between(reservation.getStartTime(), reservation.getEndTime()).toMinutes();
+                    totalMinutes += minutes;
+
+                    // Считаем рекорды
+                    if (minutes > recordHours * 60) {
+                        recordHours = minutes / 60; // сохраняем часы
+                    }
+                    if (minutes > recordDay * 60) {
+                        recordDay = minutes / 60;   // по логике это тоже часы, но можно считать иначе
+                    }
+                }
+
+                // Если бронирование в этом месяце
+                if (Objects.nonNull(reservation.getDate()) && reservation.getDate().getMonth() == currentMonth.getMonth()) {
+                    bookingDaysInMonth++;
+                }
+            }
+        }
+
+        int hoursInLibrary = totalMinutes / 60;
+        int minutesInLibrary = totalMinutes % 60;
+
+        return new UserStatisticsDto(hoursInLibrary, minutesInLibrary, bookingDaysInMonth, recordDay, recordHours);
+    }
+
 }
