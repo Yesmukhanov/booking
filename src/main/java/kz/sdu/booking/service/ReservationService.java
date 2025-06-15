@@ -116,11 +116,31 @@ public class ReservationService {
 
     public List<ReservationDto> convertAndFillList(final List<Reservation> reservationList) {
         if (CollectionUtils.isEmpty(reservationList)) {
-            return null;
+            return Collections.emptyList();
         }
 
-        return ReservationMapper.INSTANCE.toDtoList(reservationList);
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Reservation> updatedReservations = reservationList.stream()
+                .peek(reservation -> {
+                    ReservationStatus newStatus;
+                    if (reservation.getEndTime().isBefore(now)) {
+                        newStatus = ReservationStatus.EXPIRED;
+                    } else if (reservation.getStartTime().isAfter(now)) {
+                        newStatus = ReservationStatus.UPCOMING;
+                    } else if (reservation.getStartTime().isBefore(now) && reservation.getEndTime().isAfter(now)) {
+                        newStatus = ReservationStatus.ONGOING;
+                    } else {
+                        newStatus = ReservationStatus.ACTIVE;
+                    }
+
+                    reservation.setStatus(newStatus);
+				})
+                .toList();
+
+        return ReservationMapper.INSTANCE.toDtoList(updatedReservations);
     }
+
 
     /**
      * Отменяет бронирование по его идентификатору (только для ADMIN)

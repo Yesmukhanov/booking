@@ -5,5 +5,7 @@ public enum ReservationStatus {
 	ACTIVE,
 	CANCELLED,
 	EXPIRED,
-	RESERVED
+	RESERVED,
+	ONGOING,
+	UPCOMING
 }
