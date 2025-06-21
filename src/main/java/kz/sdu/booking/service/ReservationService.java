@@ -124,7 +124,9 @@ public class ReservationService {
         List<Reservation> updatedReservations = reservationList.stream()
                 .peek(reservation -> {
                     ReservationStatus newStatus;
-                    if (reservation.getEndTime().isBefore(now)) {
+                    if(reservation.getStatus().equals(ReservationStatus.CANCELLED)) {
+                        newStatus = ReservationStatus.CANCELLED;
+                    } else if (reservation.getEndTime().isBefore(now)) {
                         newStatus = ReservationStatus.EXPIRED;
                     } else if (reservation.getStartTime().isAfter(now)) {
                         newStatus = ReservationStatus.UPCOMING;
