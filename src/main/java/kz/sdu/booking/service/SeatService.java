@@ -122,6 +122,7 @@ public class SeatService {
 						.orElseThrow(() -> new UserInputException(String.format(Errors.MSG_SEAT_NOT_FOUND, id)));
 
 		seat.setBlocked(false);
+		seat.setStatus(SeatStatus.AVAILABLE);
 		seatRepository.save(seat);
 
 		return convertAndFill(seat);
