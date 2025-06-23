@@ -305,4 +305,7 @@ public class ReservationService {
         return new UserStatisticsDto(hoursInLibrary, minutesInLibrary, bookingDaysInMonth, recordDay, recordHours);
     }
 
+	public List<ReservationDto> getAllReservations() {
+		return convertAndFillList(reservationRepository.findAll());
+	}
 }

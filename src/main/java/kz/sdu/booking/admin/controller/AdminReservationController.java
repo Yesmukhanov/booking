@@ -2,12 +2,12 @@ package kz.sdu.booking.admin.controller;
 
 import kz.sdu.booking.handle.UserInputException;
 import kz.sdu.booking.model.dto.ReservationDto;
+import kz.sdu.booking.model.entity.Reservation;
 import kz.sdu.booking.service.ReservationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -29,5 +29,10 @@ public class AdminReservationController {
     @PostMapping("/{id}/cancel")
     public ReservationDto cancelReservation(@PathVariable final Long id) throws UserInputException {
         return reservationService.cancelReservationForAdmin(id);
+    }
+
+    @GetMapping("/all")
+    public List<ReservationDto> getAllReservations() {
+        return reservationService.getAllReservations();
     }
 }
